@@ -25,6 +25,11 @@ First create a new Dynamic Group (or a User Group), this is to identify the host
 You can for example create a Dynamic Group with this rule to identify all instances in one compartment (of your Kubernetes cluster). This will include the worker node instances:
 
 All {instance.compartment.id = '<your-compartment-ocid>'} 
+![image](https://user-images.githubusercontent.com/42166489/109101841-89062300-774d-11eb-9b97-c733e10d9655.png)
+    
+Create a policy with dynaic group to use log content
+
+![image](https://user-images.githubusercontent.com/42166489/109102249-70e2d380-774e-11eb-99c6-ec0889e278ba.png)
 
 
 
@@ -34,16 +39,23 @@ Under "Logging - Log Groups" create a new group named "OKE-Custom-Log-Group".
 The next step is to define a new Custom Log and Agent Configuration:
 
 In step 1 the custom log is created: 
+![image](https://user-images.githubusercontent.com/42166489/109101633-19903380-774d-11eb-9842-4cf0c6df98b2.png)
+![image](https://user-images.githubusercontent.com/42166489/109101637-1bf28d80-774d-11eb-8f20-966efe6ee40c.png)
+![image](https://user-images.githubusercontent.com/42166489/109101646-1f861480-774d-11eb-8776-d9d982c2eac9.png)
 
 
 
 In step 2, you create the Agent Configuration:
 
+![image](https://user-images.githubusercontent.com/42166489/109101649-214fd800-774d-11eb-9601-2b85d238bdb8.png)
 
 
 
 
 Select your created Dynamic Group, and enter "Log Path" using "/var/log/containers/*.log"  (without the quotes). 
+![image](https://user-images.githubusercontent.com/42166489/109101656-23b23200-774d-11eb-8730-3905ff4abc9b.png)
+
+![image](https://user-images.githubusercontent.com/42166489/109101660-26148c00-774d-11eb-9e8f-66cb6bfe1013.png)
 
 In my case, I have selected a subset of all container logs by using a wildcard path including my container name:  "/var/log/containers/*hello-spectra*.log".
 
@@ -58,31 +70,31 @@ I have been using an app similar to the Helidon MP quickstart example - or you c
 
 In the resource java class, I have added this logging code using java.util.logging - which is called everytime a GET is called on the resource:
 
-import java.util.logging.Logger;
+    import java.util.logging.Logger;
 
-final Logger logger = Logger.getLogger(HelloResource.class.getName());
+    final Logger logger = Logger.getLogger(HelloResource.class.getName());
 
-logger.info("Executing method getDefaultMessage() for GET in HelloResource");
+    logger.info("Executing method getDefaultMessage() for GET in HelloResource");
 
-The logger configuration for Helidon MP is defined in my logging.properties:
+    The logger configuration for Helidon MP is defined in my logging.properties:
 
 # Send messages to the console
 
-handlers=java.util.logging.ConsoleHandler
+    handlers=java.util.logging.ConsoleHandler
 
 # Global default logging level. Can be overriden by specific handlers and loggers
 
-.level=INFO
+    .level=INFO
 
 # Helidon Web Server has a custom log formatter that extends SimpleFormatter.
 
 # It replaces "!thread!" with the current thread name
 
-java.util.logging.ConsoleHandler.level=INFO
+    java.util.logging.ConsoleHandler.level=INFO
 
-java.util.logging.ConsoleHandler.formatter=io.helidon.webserver.WebServerLogFormatter
+    java.util.logging.ConsoleHandler.formatter=io.helidon.webserver.WebServerLogFormatter
 
-java.util.logging.SimpleFormatter.format=%1$tY.%1$tm.%1$td %1$tH:%1$tM:%1$tS %4$s %3$s !thread!: %5$s%6$s%n 
+    java.util.logging.SimpleFormatter.format=%1$tY.%1$tm.%1$td %1$tH:%1$tM:%1$tS %4$s %3$s !thread!: %5$s%6$s%n 
 
 Just go ahead and deploy this example or any other app exposing a simple REST endpoint and emitting some log entries  to OKE using kubectl or terraform - and then execute some requests.
 
@@ -99,16 +111,17 @@ With the Advanced Mode option, you can filter or search using more complex expre
 
 This is an example for the standard expression searching within one Log Group:
 
-search "ocid1.compartment.oc1..yourid1/ocid1.loggroup.oc1.eu-frankfurt-1.yourid2" | sort by datetime desc
+    search "ocid1.compartment.oc1..yourid1/ocid1.loggroup.oc1.eu-frankfurt-1.yourid2" | sort by datetime desc
 
 And here is an example for searching using a specific search string in the expression:
 
-search "ocid1.compartment.oc1..yourid1/ocid1.loggroup.oc1.eu-frankfurt-1.yourid2" | where logContent = '*getDefaultMessage()*' | sort by datetime desc
+    search "ocid1.compartment.oc1..yourid1/ocid1.loggroup.oc1.eu-frankfurt-1.yourid2" | where logContent = '*getDefaultMessage()*' | sort by datetime desc
 
 
 
 This is the detail view of the log entry:
 
+![image](https://user-images.githubusercontent.com/42166489/109101679-3462a800-774d-11eb-9077-0df51ac3cbbd.png)
 
 
 You can optimize the parsing result structure by using the appropriate Fluentd parser options.
