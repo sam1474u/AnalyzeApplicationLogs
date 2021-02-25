@@ -9,6 +9,9 @@ The term observability is usually comprised of three main areas: metrics, loggin
 
 <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm">OCI Logging</a> is a new central component for analyzing and searching log file entries for tenancies in Oracle Cloud Infrastructure (OCI). It uses Fluentd under the hoods to push log files to a central log store where it it indexed for easier and faster searching. There are many services which have predefined agents and can be easily enabled to publish logs - like Functions. The ability to add custom logs from any compute instance makes it even more flexible to use this with other components like Oracle Kubernetes Engine (OKE) as well.
 
+![image](https://user-images.githubusercontent.com/42166489/109104169-87d6f500-7751-11eb-8a3d-779a76e74d6a.png)
+
+
 ### 2 - Setting up the OKE Kubernetes Cluster
 **prerequisite**: Setup <a href="https://github.com/sam1474u/Deploy-Helidon-Based-Application-in-Kubernetes-Cluster">Helidon App</a>
 
@@ -138,9 +141,4 @@ In the next post I will describe how to setup and use OCI Logging Analytics - wh
 
 Happy analyzing of your logs!
 
-### 6 - References
-Oracle OCI Logging Overview
-OCI Logging - Custom Logs
-Fluentd 
-Oracle Helidon
-Oracle Helidon MP Quickstart
+
