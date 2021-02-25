@@ -1,5 +1,7 @@
 # AnalyzeAppliccationLogs
 
+
+
 ### 1 - Introduction
 Observability (O11y)  is key for cloud-native applications. As mentioned by Clay Magouyrk, EVP Oracle Cloud Infrastructure  in his <a href="https://www.oracle.com/events/live/multicloud-observability-and-management/">webcast</a> on October 6th 2020, the OCI platform has just added new powerful features and tools in this area - as Oracle OCI Observability Platform.
 
@@ -8,6 +10,8 @@ The term observability is usually comprised of three main areas: metrics, loggin
 <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm">OCI Logging</a> is a new central component for analyzing and searching log file entries for tenancies in Oracle Cloud Infrastructure (OCI). It uses Fluentd under the hoods to push log files to a central log store where it it indexed for easier and faster searching. There are many services which have predefined agents and can be easily enabled to publish logs - like Functions. The ability to add custom logs from any compute instance makes it even more flexible to use this with other components like Oracle Kubernetes Engine (OKE) as well.
 
 ### 2 - Setting up the OKE Kubernetes Cluster
+**prerequisite**: Setup <a href="https://github.com/sam1474u/Deploy-Helidon-Based-Application-in-Kubernetes-Cluster">Helidon App</a>
+
 For publishing the custom logs from the OKE worker nodes (or any other compute instance), it is required to have the Oracle Unified Monitoring Agent installed. This agent is by default included in the newer Oracle Linux images.
 
 If you create a Node Pool for OKE based on one of these newer images - for example "Oracle-Linux-7.8-2020.08.26-0" or newer, then you will not need to install the agent manually.
@@ -39,6 +43,7 @@ Under "Logging - Log Groups" create a new group named "OKE-Custom-Log-Group".
 The next step is to define a new Custom Log and Agent Configuration:
 
 In step 1 the custom log is created: 
+<br/>
 ![image](https://user-images.githubusercontent.com/42166489/109101633-19903380-774d-11eb-9842-4cf0c6df98b2.png)
 ![image](https://user-images.githubusercontent.com/42166489/109101637-1bf28d80-774d-11eb-8f20-966efe6ee40c.png)
 ![image](https://user-images.githubusercontent.com/42166489/109101646-1f861480-774d-11eb-8776-d9d982c2eac9.png)
@@ -57,7 +62,6 @@ Select your created Dynamic Group, and enter "Log Path" using "/var/log/containe
 
 ![image](https://user-images.githubusercontent.com/42166489/109101660-26148c00-774d-11eb-9e8f-66cb6bfe1013.png)
 
-In my case, I have selected a subset of all container logs by using a wildcard path including my container name:  "/var/log/containers/*hello-spectra*.log".
 
 You do not need to enter any advanced parser option for now.
 
@@ -78,17 +82,17 @@ In the resource java class, I have added this logging code using java.util.loggi
 
     The logger configuration for Helidon MP is defined in my logging.properties:
 
-# Send messages to the console
+**Send messages to the console**
 
     handlers=java.util.logging.ConsoleHandler
 
-# Global default logging level. Can be overriden by specific handlers and loggers
+**Global default logging level. Can be overriden by specific handlers and loggers**
 
     .level=INFO
 
-# Helidon Web Server has a custom log formatter that extends SimpleFormatter.
+**Helidon Web Server has a custom log formatter that extends SimpleFormatter.**
 
-# It replaces "!thread!" with the current thread name
+**It replaces "!thread!" with the current thread name**
 
     java.util.logging.ConsoleHandler.level=INFO
 
