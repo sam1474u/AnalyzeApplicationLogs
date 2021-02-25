@@ -1,21 +1,23 @@
 # AnalyzeAppliccationLogs
 
 ### 1 - Introduction
-Observability (O11y)  is key for cloud-native applications. As mentioned by Clay Magouyrk, EVP Oracle Cloud Infrastructure  in his webcast on October 6th 2020, the OCI platform has just added new powerful features and tools in this area - as Oracle OCI Observability Platform.
+Observability (O11y)  is key for cloud-native applications. As mentioned by Clay Magouyrk, EVP Oracle Cloud Infrastructure  in his <a href="https://www.oracle.com/events/live/multicloud-observability-and-management/">webcast</a> on October 6th 2020, the OCI platform has just added new powerful features and tools in this area - as Oracle OCI Observability Platform.
 
 The term observability is usually comprised of three main areas: metrics, logging and tracing. In this post I will focus on (central) logging - and will describe as an example how easy it is to add your Kubernetes container logs (or any other custom log file) to OCI Logging.
 
-OCI Logging is a new central component for analyzing and searching log file entries for tenancies in Oracle Cloud Infrastructure (OCI). It uses Fluentd under the hoods to push log files to a central log store where it it indexed for easier and faster searching. There are many services which have predefined agents and can be easily enabled to publish logs - like Functions. The ability to add custom logs from any compute instance makes it even more flexible to use this with other components like Oracle Kubernetes Engine (OKE) as well.
+<a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm">OCI Logging</a> is a new central component for analyzing and searching log file entries for tenancies in Oracle Cloud Infrastructure (OCI). It uses Fluentd under the hoods to push log files to a central log store where it it indexed for easier and faster searching. There are many services which have predefined agents and can be easily enabled to publish logs - like Functions. The ability to add custom logs from any compute instance makes it even more flexible to use this with other components like Oracle Kubernetes Engine (OKE) as well.
 
 ### 2 - Setting up the OKE Kubernetes Cluster
 For publishing the custom logs from the OKE worker nodes (or any other compute instance), it is required to have the Oracle Unified Monitoring Agent installed. This agent is by default included in the newer Oracle Linux images.
 
 If you create a Node Pool for OKE based on one of these newer images - for example "Oracle-Linux-7.8-2020.08.26-0" or newer, then you will not need to install the agent manually.
 
-See instructions in the OCI Logging Documentation on how to install and verify the agent. You can check if the agent is installed and running by executing this via ssh on one of the worker nodes:  
+See instructions in the <a href="OCI Logging Documentation">OCI Logging Documentation</a> on how to install and verify the agent. You can check if the agent is installed and running by executing this via ssh on one of the worker nodes:  
 
-systemctl status unified-monitoring-agent
+    systemctl status unified-monitoring-agent
+    
 ### 3 - Setting up OCI Logging for Custom Logs
+
 I assume you have an existing Kubernetes cluster available on OKE - otherwise just go ahead and deploy a cluster using the quickstart option.
 
 First create a new Dynamic Group (or a User Group), this is to identify the hosts (compute instances) where logs should be collected:
